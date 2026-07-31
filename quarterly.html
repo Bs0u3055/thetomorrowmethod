@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>TomorrowWork — The Living Tunnel · Q3 2026</title>
+
+<!-- ==================================================================
+     THE LIVING TUNNEL — companion site to the book TomorrowWork
+     ==================================================================
+     HOW THIS FILE WORKS (read this, Harry):
+
+     Everything below the ====DATA==== line and above the ====DESIGN====
+     line is the SPECIALS BOARD — the numbers, readings and signals that
+     change each quarter. Everything else is the restaurant: walls,
+     tables, lighting. A quarterly refresh means rewriting the specials
+     board only. Do not touch anything below the DESIGN line unless you
+     actually want to move the furniture.
+
+     To refresh: follow QUARTERLY-PLAYBOOK.md (it lives next to this
+     file). In short — update the values inside SITE_DATA, add a
+     changelog entry, save, open the file in a browser to check it,
+     done. The page draws itself from the data.
+     ================================================================== -->
+
+<script>
+/* ===================== DATA ===================== */
+/* The specials board. Edit values, keep the shape.  */
+/* Text in quotes; numbers plain; keep the commas.   */
+
+const SITE_DATA = {
+
+  /* ---- The banner ---- */
+  meta: {
+    quarter: "Q3 2026",
+    updated: "21 July 2026",
+    nextRefresh: "October 2026",
+    edition: 1
+  },
+
+  /* ---- Six numbers for the top strip. Swap freely each quarter. ---- */
+  headline: [
+    { number: "14h 30m", label: "the longest software task the leading model completes at coin-flip reliability", source: "METR", asOf: "Feb 2026" },
+    { number: "88%", label: "of organisations now use AI in at least one business function", source: "McKinsey / Stanford AI Index", asOf: "Apr 2026" },
+    { number: "62%", label: "average wage premium for workers with AI skills (up from 57%)", source: "PwC AI Jobs Barometer", asOf: "Jun 2026" },
+    { number: "−16%", label: "relative employment, workers 22–25, most AI-exposed occupations", source: "Stanford / ADP", asOf: "2026" },
+    { number: "20.2%", label: "of firms across the OECD using AI (8.7% two years ago)", source: "OECD", asOf: "Jan 2026" },
+    { number: "≤10%", label: "of firms scaling AI agents in any single business function", source: "McKinsey", asOf: "Mar 2026" }
+  ],
+
+  /* ---- The builder barometer (Ch 3): capability, right now ---- */
+  barometer: {
+    readings: [
+      { stat: "Frontier models now complete software tasks that take a skilled engineer 14½ hours, at 50% reliability — and that horizon has been doubling roughly every four to seven months.",
+        source: "METR, task-completion time horizons", asOf: "Feb 2026",
+        url: "https://metr.org/time-horizons/" },
+      { stat: "SWE-bench Verified (real GitHub issues) went from 60% to near-100% in a single year. The benchmark is close to used up.",
+        source: "Stanford AI Index 2026", asOf: "Apr 2026",
+        url: "https://hai.stanford.edu/ai-index/2026-ai-index-report" },
+      { stat: "Every major lab now ships a model plus an agent harness — the model supplies judgement, the harness supplies tools, permissions and persistence. Prices fell 30–60% on 2025.",
+        source: "industry release notes, July 2026 state of play", asOf: "Jul 2026",
+        url: "" },
+      { stat: "The same models that win mathematics olympiads read an analogue clock correctly 50.1% of the time. Capability is jagged, not uniform — which is why the task audit works and 'is my job safe?' doesn't.",
+        source: "Stanford AI Index 2026", asOf: "Apr 2026",
+        url: "https://hai.stanford.edu/ai-index/2026-ai-index-report" },
+      { stat: "A 1.6-trillion-parameter open-source model under an MIT licence, trained entirely on domestic Chinese chips, now posts frontier-adjacent coding scores. The capability is no longer anyone's to switch off.",
+        source: "LongCat-2.0 release", asOf: "Jun 2026",
+        url: "" }
+    ],
+    stoppedDoingByHand: [
+      "Writing first-draft code and letting agents run unattended for hours, reviewing diffs rather than typing",
+      "Reading documentation — agents fetch, digest and apply it mid-task",
+      "Single-model workflows — builders now route work across model portfolios by task",
+      "Writing their own tests, tickets and changelogs"
+    ]
+  },
+
+  /* ---- The task audit, repriced (Ch 3): what the jobs data says ---- */
+  audit: {
+    falling: [
+      { stat: "Employment for 22–25-year-olds in the most AI-exposed occupations is down 16% relative to peers, and is now shrinking at 3.8% a year. Software development and customer service show it clearest.",
+        source: "Stanford Digital Economy Lab / ADP (Brynjolfsson et al.)", asOf: "Jun 2026" },
+      { stat: "At firms that adopted generative AI, entry-level hiring has fallen roughly 80% since 2023 — driven by slower hiring, not layoffs. The ladder's bottom rung is being quietly removed, not sawn off.",
+        source: "Harvard research on AI-adopting firms", asOf: "May 2026" },
+      { stat: "Clerical and administrative roles remain the steepest projected decliners to 2030.",
+        source: "WEF Future of Jobs 2025", asOf: "Jan 2025" }
+    ],
+    holding: [
+      { stat: "The OECD still finds no signs of widespread labour displacement at industry level — accountability, presence and relationship tasks are holding, exactly as the structural argument predicts.",
+        source: "OECD Employment Outlook 2026", asOf: "Jun 2026" },
+      { stat: "Goldman Sachs expects AI-driven unemployment effects spread over a decade — under one percentage point in any given year. The repricing is real; the cliff-edge is not the base case.",
+        source: "Goldman Sachs Research", asOf: "2026" }
+    ],
+    rising: [
+      { stat: "Workers with AI skills now command a 62% average wage premium, up from 57% last year. Jobs requiring AI skills are growing almost eight times faster than the overall market.",
+        source: "PwC Global AI Jobs Barometer 2026", asOf: "Jun 2026" },
+      { stat: "PwC finds a two-track market: 'professionalised' roles where AI magnifies expert judgement are seeing twice the job growth and 42% faster salary increases than roles AI merely simplifies. Taste and judgement are repricing upward, on schedule.",
+        source: "PwC Global AI Jobs Barometer 2026", asOf: "Jun 2026" },
+      { stat: "Entry-level postings in exposed occupations are now seven times more likely to demand traditionally senior skills — judgement, leadership. The rung didn't vanish; it moved up. Demand for these 'seniorised' junior roles is up 35% since 2019.",
+        source: "PwC / Fortune", asOf: "Jun 2026" }
+    ]
+  },
+
+  /* ---- Adoption: the deployment gap ---- */
+  adoption: {
+    enterprise: [
+      { stat: "88% of organisations use AI in at least one function; 72% use generative AI (33% in 2024).", source: "McKinsey State of AI", asOf: "2026" },
+      { stat: "But scaling is thin: 23% are scaling an agentic system somewhere; in any single business function it's 10% or less.", source: "McKinsey", asOf: "Mar 2026" },
+      { stat: "Across the OECD, 20.2% of firms use AI — up from 14.2% (2024) and 8.7% (2023). Doubled in two years.", source: "OECD", asOf: "Jan 2026" },
+      { stat: "Sector spread is dramatic: ICT 57.3%, professional services 36.8%, everyone else far behind — but the laggards are sprinting (accommodation & food +62.5% year on year, construction +59.1%).", source: "OECD", asOf: "Jan 2026" },
+      { stat: "Large firms adopt at three times the rate of small ones (~52% vs ~17%).", source: "OECD", asOf: "Jan 2026" }
+    ],
+    people: [
+      { stat: "Generative AI reached 53% of the population faster than the PC or the internet did.", source: "Stanford AI Index 2026", asOf: "Apr 2026" },
+      { stat: "ChatGPT passed 900 million weekly users.", source: "OpenAI / press", asOf: "Feb 2026" },
+      { stat: "At work, the split is stark: 12% of US employees use AI daily, 26% a few times a week — and nearly half never. The gap between the fluent and the rest is the quiet story of 2026.", source: "Gallup", asOf: "2026" },
+      { stat: "Country lanes: employee AI use exceeds 80% in India, China, UAE and Saudi Arabia; the US sits near 45%.", source: "workforce surveys", asOf: "2026" }
+    ]
+  },
+
+  /* =================================================================
+     THE FOUR POSTCARDS — the game layer (Ch 7, Tools 7–9).
+     This block DRIVES the interactive re-test below: the momentum
+     value sets each dial, the signals become the reader's checklist,
+     and the gridQuestion is what they ask of each row of their grid.
+     Change these numbers and the game changes with them.
+
+     momentum: −2 receding fast · −1 receding · 0 steady ·
+               +1 strengthening · +2 landing early
+     ================================================================= */
+  climates: [
+    {
+      id: "acceleration",
+      name: "The Acceleration",
+      postcard: "Capability keeps lurching upward and deployment finally catches up. The falling pile falls fast; supervision jobs go to a fraction of the people who did the producing.",
+      momentum: 2,
+      reading: "Landing early",
+      whyNow: "The capability half of this postcard is running ahead of schedule: agent task-horizons doubling every few months, coding benchmarks near saturation, and the first clean occupational evidence — young workers in exposed roles down 16%, entry-level hiring at adopting firms down 80%. Deployment still lags the demos (see the Plateau), which is the main brake left.",
+      evidence: [
+        "METR horizon 14½ hours and doubling every 4–7 months (Feb 2026)",
+        "Stanford/ADP: −16% relative employment, 22–25s in exposed occupations; now −3.8%/yr (Jun 2026)",
+        "Goldman raised its US displacement estimate to ~15 million workers over a decade (2026)"
+      ],
+      counter: "The OECD still finds no widespread industry-level displacement, and agent scaling inside firms is ≤10% per function. The wave is visible; most of it has not landed.",
+      signals: [
+        "A tool the builders call boring reaches your industry's early adopters",
+        "Junior hiring in your function is frozen or 'restructured' two quarters running",
+        "A competitor ships your core deliverable with half the headcount",
+        "Your falling-pile tasks appear in a vendor demo aimed at your boss"
+      ],
+      gridQuestion: "If supervision jobs go to a fraction of today's producers — does this row still hold?"
+    },
+    {
+      id: "plateau",
+      name: "The Long Plateau",
+      postcard: "The capability curve flattens, but boards keep demanding AI efficiencies, so restructures roll on anyway — justified by capability that is always slightly overstated.",
+      momentum: -1,
+      reading: "Receding — but only half of it",
+      whyNow: "The capability half of this postcard is losing: the curve did not flatten this year; it steepened. But the plateau's nastier half — restructure theatre outrunning real capability — is alive and measurable: firms cutting graduate intake while fewer than one in ten have scaled an agent in any function. You can be plateaued and restructured at the same time; ask 2026's graduates.",
+      evidence: [
+        "Task horizons and benchmark scores still climbing steeply (METR Feb 2026; Stanford Apr 2026)",
+        "Agent scaling ≤10% per business function — deployment far behind announcement (McKinsey Mar 2026)",
+        "Entry-level hiring cuts at adopters (−80%) precede proven capability in most functions (Harvard, May 2026)"
+      ],
+      counter: "Reliability problems and enterprise integration pain are real; most measured productivity gains remain modest outside coding and content. The plateau keeps a pulse.",
+      signals: [
+        "Two consecutive frontier releases that feel like point-updates",
+        "Your company announces AI savings before deploying any AI you can name",
+        "Benchmark progress continues but enterprise case studies stay thin",
+        "The builders start complaining the models stopped getting better"
+      ],
+      gridQuestion: "If the tech stalls but the cost-cutting doesn't — what does this row shelter behind?"
+    },
+    {
+      id: "twospeed",
+      name: "The Two-Speed World",
+      postcard: "It lands unevenly. Some sectors transform in three years; others barely move. Your fate depends on which side of the line your industry, country and clients sit.",
+      momentum: 2,
+      reading: "Already here",
+      whyNow: "The quiet winner of the quarter. Every fresh adoption dataset shows widening lanes: ICT firms at 57% adoption while most sectors sit under 20; Sweden's ICT sector near 88% while others idle; India, China and the Gulf above 80% employee use while half of US workers never touch it; large firms adopting at three times the rate of small. The book's bet that fate = lane, not skill, is currently the best-evidenced postcard of the four.",
+      evidence: [
+        "OECD sector spread: ICT 57.3% vs 20.2% all-firm average (Jan 2026)",
+        "Country spread: 80%+ employee use in India/China/UAE/Saudi vs ~45% US, ~28% US population-level (2026)",
+        "Firm-size spread: large ~52% vs small ~17% (OECD, Jan 2026)"
+      ],
+      counter: "Lanes can swap: last year's laggards (hospitality +62.5%, construction +59.1%) are the fastest movers this year. Two-speed is real but the lane assignments are not permanent.",
+      signals: [
+        "Your sector's regulator publishes AI guidance (fast lane opening) — or blocks deployment (slow lane holding)",
+        "Clients in one geography start expecting AI-rate pricing while another still pays 2024 rates",
+        "A slow-lane employer near you starts poaching fast-lane fluency",
+        "Your industry's conference agenda still calls AI 'emerging'"
+      ],
+      gridQuestion: "Which lane is each client, sector and country in this row actually in — and can you cross between them?"
+    },
+    {
+      id: "humanpremium",
+      name: "The Human Premium",
+      postcard: "The machines win the internet — and the internet devalues. Trust in the unverified collapses; a counter-economy prices rooms, presence, live judgement and names that stand behind work.",
+      momentum: 1,
+      reading: "Firming",
+      whyNow: "Still the earliest-stage postcard, but the first hard numbers arrived this year: PwC's two-track split shows roles where AI magnifies personally-accountable expertise growing twice as fast, with salaries rising 42% faster. The premium on judgement, presence and a name that vouches is now measurable — a 62% wage premium and a 118% premium at the top end. What's not yet visible at scale: the trust collapse in online content that turbo-charges this postcard.",
+      evidence: [
+        "PwC: professionalised (judgement-magnifying) roles growing 2× with 42% faster salary growth (Jun 2026)",
+        "AI-skills wage premium 62% average, up to 118% in consumer-market roles (PwC, Jun 2026)",
+        "Entry roles repricing toward judgement and leadership — 7× more likely to require senior skills (Jun 2026)"
+      ],
+      counter: "The verified-human economy remains mostly anecdote: workshop rates, keynote fees, in-person consulting. Watch for platforms paying premiums for proven-human content; that's the tripwire.",
+      signals: [
+        "People in your field start charging visibly more for in-person versions of screen work",
+        "A client asks for proof a human made it — and pays for the proof",
+        "Platforms or publishers launch verified-human labels with money attached",
+        "Your own falling-pile output gets cheap enough that clients ask for you in the room instead"
+      ],
+      gridQuestion: "If demand doubled for the in-person, accountable version of this row — could you scale a yes?"
+    }
+  ],
+
+  /* =================================================================
+     PERSONALISATION — the lane finder (Ch 7 Tool 7: personalise
+     before use; Postcard 3: your fate = your lane).
+     The reader types their industry (and optionally one they're
+     eyeing); the page blends that lane's evidence into their read-out.
+
+     weights: how the read-out bars are mixed. Must sum to 1.
+       world  = this quarter's overall momentum (the national forecast)
+       lane   = their industry's modifiers (the local forecast)
+       signals= what they've personally ticked (the view out the window)
+     If no industry is chosen, lane's share folds into world.
+
+     Each industry: mods are −1 (this postcard bites less here),
+     0 (as overall), +1 (bites harder here) per climate. Refresh the
+     stats and dates each quarter like everything else.
+     ================================================================= */
+  personalisation: {
+    weights: { world: 0.4, lane: 0.3, signals: 0.3 },
+    industries: [
+      { id:"tech", name:"Technology & software", aliases:["software","tech","it","saas","developer","engineering","data","ict"],
+        lane:"fast", laneNote:"The fastest lane there is — and the first to feel supervision-thinning.",
+        adoption:{ stat:"57.3% of ICT firms use AI — the highest of any sector; near-saturation in Sweden (87.9%)", source:"OECD", asOf:"Jan 2026" },
+        exposure:"Routine code falling fastest anywhere; architecture, judgement and outcome-ownership rising; the review seat holds.",
+        stats:[
+          { stat:"SWE-bench (real software fixes) went 60% → near-100% in a year", source:"Stanford AI Index", asOf:"Apr 2026" },
+          { stat:"Employment for 22–25s in software development measurably shrinking — the clearest occupational signal in the data", source:"Stanford/ADP", asOf:"Jun 2026" } ],
+        puckNote:"Value is migrating from producing code to directing it — taste, review, architecture, accountability. The falling pile funds the rising one, but only for those who move up the stack.",
+        mods:{ acceleration:1, plateau:-1, twospeed:0, humanpremium:0 } },
+
+      { id:"profserv", name:"Professional services", aliases:["consulting","legal","law","accounting","accountancy","audit","strategy","advisory","solicitor","lawyer","consultant"],
+        lane:"fast", laneNote:"Second-highest adoption; the explicit commercial target — the expensive tasks live here.",
+        adoption:{ stat:"36.8% of professional & scientific services firms use AI — second only to ICT", source:"OECD", asOf:"Jan 2026" },
+        exposure:"First drafts, research briefings and standard analysis falling; the accountable name, client trust and the vouching task holding hard.",
+        stats:[
+          { stat:"'Professionalised' roles where AI magnifies expert judgement: 2× job growth, 42% faster salary growth", source:"PwC AI Jobs Barometer", asOf:"Jun 2026" },
+          { stat:"Entry roles 7× more likely to demand traditionally senior skills — the rung moved up", source:"PwC", asOf:"Jun 2026" } ],
+        puckNote:"A lateral into another advisory craft buys nothing — same falling piles. Up the stack (judgement, accountability) or toward the room (workshops, testimony, the trusted-name seat).",
+        mods:{ acceleration:1, plateau:0, twospeed:0, humanpremium:1 } },
+
+      { id:"finance", name:"Financial services & insurance", aliases:["finance","banking","bank","insurance","fintech","investment","asset management","actuary"],
+        lane:"fast", laneNote:"Leading the agent era: banking and insurance run agents in production at roughly twice the all-industry rate.",
+        adoption:{ stat:"~47% of banking & insurance firms run at least one AI agent in production — the highest of any sector", source:"industry surveys", asOf:"mid-2026" },
+        exposure:"Analysis, reporting and processing falling; regulated accountability, fiduciary trust and the liability-holding name structurally holding.",
+        stats:[
+          { stat:"AI-skills wage premium in financial services runs well above the 62% cross-market average", source:"PwC", asOf:"Jun 2026" } ],
+        puckNote:"Regulation is the moat and the anchor: the sign-off seat holds while the spreadsheet work goes. Build toward the judgement the regulator requires a human to own.",
+        mods:{ acceleration:1, plateau:0, twospeed:1, humanpremium:0 } },
+
+      { id:"marketing", name:"Marketing, media & creative", aliases:["marketing","advertising","creative","copywriting","design","media","content","brand","pr","communications","journalism"],
+        lane:"fast", laneNote:"Where the falling pile fell first — and where taste is repricing fastest.",
+        adoption:{ stat:"Content production was the first function to automate at scale; consumer-market roles carry the top AI-skills wage premium — 118%", source:"PwC", asOf:"Jun 2026" },
+        exposure:"First drafts, versioning and production falling hard (the pre-written brief asking you to 'just polish'); voice, strategy and the confidence to say 'this is wrong for you' rising.",
+        stats:[
+          { stat:"118% AI-skills wage premium in consumer-market roles — the highest measured anywhere", source:"PwC AI Jobs Barometer", asOf:"Jun 2026" } ],
+        puckNote:"Rachel's path is the map: clients stop needing your sentences and start needing your judgement about sentences. Sell the taste, not the typing — and weight the in-person share.",
+        mods:{ acceleration:1, plateau:-1, twospeed:0, humanpremium:1 } },
+
+      { id:"health", name:"Healthcare", aliases:["health","healthcare","medical","medicine","nhs","doctor","nurse","clinical","pharma","pharmaceutical","dentist","physio"],
+        lane:"mid", laneNote:"Regulated and liability-heavy — a slow lane with fast pockets (documentation went first).",
+        adoption:{ stat:"Ambient AI scribes saw major clinical adoption in 2025 — physicians report up to 83% less time writing notes", source:"Stanford AI Index", asOf:"Apr 2026" },
+        exposure:"Notes, admin and coding falling; presence, procedures, liability and the bedside hold structurally — the vouching task is the job.",
+        stats:[
+          { stat:"Documentation automation is the wedge; diagnosis-adjacent tools remain assistive, not autonomous, under current regulation", source:"Stanford AI Index", asOf:"Apr 2026" } ],
+        puckNote:"The physical and accountable core is about as Human-Premium-proof as work gets. The risk is the admin-heavy roles around it, not the hands-on ones.",
+        mods:{ acceleration:-1, plateau:0, twospeed:1, humanpremium:1 } },
+
+      { id:"education", name:"Education", aliases:["education","teaching","teacher","school","university","academic","lecturer","tutor","training"],
+        lane:"mid", laneNote:"Institutionally slow, individually fast — students adopted before the timetable did.",
+        adoption:{ stat:"Institutional adoption lags most sectors while student and teacher personal use runs far ahead of policy", source:"OECD / sector surveys", asOf:"2026" },
+        exposure:"Marking, materials and admin falling; the room, the relationship and safeguarding holding; curriculum judgement rising.",
+        stats:[
+          { stat:"Tutoring and content generation are the fastest-moving pockets; assessment integrity is the unresolved question", source:"sector reporting", asOf:"2026" } ],
+        puckNote:"Presence-heavy teaching sits in the Human Premium's tailwind; content-production roles around it sit in the Acceleration's path. Know which side of that line your tasks are on.",
+        mods:{ acceleration:-1, plateau:1, twospeed:1, humanpremium:1 } },
+
+      { id:"gov", name:"Government & public sector", aliases:["government","public sector","civil service","council","policy","local authority","public"],
+        lane:"slow", laneNote:"The slowest lane in the data — shelter and stagnation in the same postcode.",
+        adoption:{ stat:"Lowest AI-skills wage premium of any sector: ~16% (vs 62% average)", source:"PwC AI Jobs Barometer", asOf:"Jun 2026" },
+        exposure:"Processing and correspondence falling slowly; statutory accountability and democratic oversight holding; procurement pace is the real clock.",
+        stats:[
+          { stat:"Public-sector adoption trails every private benchmark; where it lands, it lands via procurement cycles measured in years", source:"OECD", asOf:"2026" } ],
+        puckNote:"Shelter is real — use it deliberately: the slow lane is the best place to build fast-lane fluency before it's required. That's the two-speed crossing, run on purpose.",
+        mods:{ acceleration:-1, plateau:1, twospeed:1, humanpremium:0 } },
+
+      { id:"retail", name:"Retail & e-commerce", aliases:["retail","ecommerce","e-commerce","shop","store","merchandising","fmcg","consumer goods"],
+        lane:"mid", laneNote:"Customer-facing tasks automating fast; stores and supply judgement holding.",
+        adoption:{ stat:"Customer service — retail's biggest desk function — shows the clearest employment decline in the occupational data", source:"Stanford/ADP", asOf:"Jun 2026" },
+        exposure:"Service scripts, listings and forecasting falling; in-store presence, supplier relationships and range judgement holding.",
+        stats:[
+          { stat:"Consumer-market roles carry the top AI-skills wage premium (118%) — the taste jobs are repricing", source:"PwC", asOf:"Jun 2026" } ],
+        puckNote:"Marcus's map: sector scars convert to turnaround judgement that thrives exactly where the anchor breaks. The floor holds; the back office doesn't.",
+        mods:{ acceleration:0, plateau:0, twospeed:1, humanpremium:0 } },
+
+      { id:"construction", name:"Construction & trades", aliases:["construction","builder","trades","plumber","electrician","carpenter","surveying","architecture","civil engineering"],
+        lane:"slow", laneNote:"Physical work in a digital storm — low base, suddenly the fast climber.",
+        adoption:{ stat:"AI adoption growing 59.1% year on year — from a low base, the second-fastest of any sector", source:"OECD", asOf:"Jan 2026" },
+        exposure:"Quoting, drawings and paperwork falling; the site, the hands and the liability-carrying sign-off holding hard.",
+        stats:[
+          { stat:"Physical presence remains the strongest structural hold in the task data — machines take the paperwork first", source:"OECD / task-level research", asOf:"2026" } ],
+        puckNote:"A Human Premium tailwind at your back: unfakeable, in-person, accountable work. The office side of the industry is the exposed side.",
+        mods:{ acceleration:-1, plateau:0, twospeed:1, humanpremium:1 } },
+
+      { id:"hospitality", name:"Hospitality & food", aliases:["hospitality","hotel","restaurant","catering","chef","food","tourism","events"],
+        lane:"slow", laneNote:"The presence economy — and this year's fastest adoption climber.",
+        adoption:{ stat:"AI adoption growing 62.5% year on year — the fastest of any sector, from the lowest base", source:"OECD", asOf:"Jan 2026" },
+        exposure:"Bookings, rotas and marketing falling; the room, the welcome and the service itself holding — they are the product.",
+        stats:[
+          { stat:"Back-office automation arriving fast; the front-of-house premium on human service intact in every dataset", source:"OECD / sector surveys", asOf:"2026" } ],
+        puckNote:"If the Human Premium lands, this is where it pays out — rooms, presence, hosting. Build the offline craft; automate the rota.",
+        mods:{ acceleration:-1, plateau:0, twospeed:1, humanpremium:1 } },
+
+      { id:"manufacturing", name:"Manufacturing & logistics", aliases:["manufacturing","factory","logistics","supply chain","warehouse","operations","transport","distribution"],
+        lane:"mid", laneNote:"Two revolutions at different speeds: the desk side moves with AI; the floor moves with robotics capex.",
+        adoption:{ stat:"Desk-side AI (planning, forecasting, documentation) adopting at mid-market rates; physical automation on a separate, slower capex clock", source:"OECD / PIIE", asOf:"2026" },
+        exposure:"Scheduling, forecasting and documentation falling; floor skills, safety accountability and supplier trust holding.",
+        stats:[
+          { stat:"Sector adoption clusters near the 20.2% all-firm OECD average — neither lane's extreme", source:"OECD", asOf:"Jan 2026" } ],
+        puckNote:"The office jobs around the plant are more exposed than the plant. Orchestration — stitching machine plans to physical reality — is the rising seat.",
+        mods:{ acceleration:0, plateau:1, twospeed:1, humanpremium:0 } },
+
+      { id:"custserv", name:"Customer service & support", aliases:["customer service","support","call centre","call center","contact centre","helpdesk","customer success"],
+        lane:"fast", laneNote:"With software development, the clearest employment signal in the data — named in every study.",
+        adoption:{ stat:"Customer service shows pronounced employment decline for younger workers — one of the two clearest occupational patterns", source:"Stanford/ADP", asOf:"Jun 2026" },
+        exposure:"Scripted contact falling fastest of any task family; complex resolution, retention judgement and the escalation seat holding.",
+        stats:[
+          { stat:"Employment falling among younger workers while older workers in the same roles hold — experience is the current moat", source:"Stanford/ADP", asOf:"Jun 2026" } ],
+        puckNote:"The escalation seat — the human a machine hands the angry customer to — is the rising task. It's fewer seats, better paid, and it runs on judgement the scripts can't hold.",
+        mods:{ acceleration:1, plateau:-1, twospeed:0, humanpremium:0 } }
+    ]
+  },
+
+  /* ---- The horizon: what serious forecasters expect, year by year ---- */
+  horizon: [
+    { year: "2028 (+2yrs)",
+      note: "If METR's doubling holds even at the slower rate, agents complete week-long professional tasks. Goldman's displacement ramp begins in earnest — concentrated in knowledge and content work, entry level first. Agent deployment crosses from pilot to production in most large enterprises.",
+      confidence: "extrapolation from current trend — the least certain line on this table" },
+    { year: "2029 (+3yrs)",
+      note: "Mid-point of the WEF 2025–2030 window: on their survey, roughly half the projected 92 million role displacements and 170 million creations are in motion. 39% of today's skill sets partly outdated. The two-speed gap between AI-forward and AI-absent firms is at its widest.",
+      confidence: "employer-survey based (1,000+ employers, 55 economies)" },
+    { year: "2030 (+4yrs)",
+      note: "WEF landing zone: 22% of formal jobs disrupted — 92M displaced, 170M created, net +78M globally, with the gains and losses landing on different people, in different places, at different pay. Goldman: US unemployment effect capped near 1pt/year but cumulative.",
+      confidence: "the most-cited forecast in the field; treat as scenario, not schedule" },
+    { year: "2031 (+5yrs)",
+      note: "The book's postcard year. Nobody serious forecasts this far at task level. The honest statement: all four postcards remain live, the Acceleration and Two-Speed currently carry the most evidence, and the portfolio trendline (two-in-five workers already freelancing in some form) keeps pointing at half the workforce.",
+      confidence: "this is what scenario planning is for" }
+  ],
+
+  /* ---- The bulletin: this quarter in one paragraph (mirrors BULLETIN file) ---- */
+  bulletinSummary: "The quarter the Acceleration stopped being deniable and the Two-Speed World turned out to already be here. Capability ran ahead of schedule (14½-hour agent tasks, benchmarks saturating); the labour data finally showed a clean signal (young workers in exposed jobs, −16%); and yet the OECD still can't find mass displacement — because the wave is landing lane by lane, not everywhere at once. The surprise: the Human Premium got its first hard numbers, and they're wage premiums, not anecdotes.",
+
+  /* ---- Changelog: newest first. Add one entry per refresh. ---- */
+  changelog: [
+    { quarter: "Q3 2026", date: "21 July 2026",
+      changes: "First edition. Baseline data laid in from Stanford AI Index 2026 (Apr), PwC AI Jobs Barometer 2026 (Jun), OECD Employment Outlook 2026 (Jun), OECD adoption data (Jan), McKinsey State of AI (Mar), WEF Future of Jobs 2025 (Jan 2025), METR task horizons (Feb), Anthropic Economic Index (Jan–Jun), Goldman Sachs Research (2026), Stanford/ADP labour data (Jun), Harvard entry-level hiring research (May). Postcard readings initialised: Acceleration +2, Plateau −1, Two-Speed +2, Human Premium +1. Lane finder added: twelve-industry library with sector-specific evidence, postcard modifiers, crossing verdicts and the desk-research brief." }
+  ],
+
+  /* ---- Sources cited above, for the footer ---- */
+  sources: [
+    { name: "Stanford HAI — AI Index Report 2026", when: "published April 2026", url: "https://hai.stanford.edu/ai-index/2026-ai-index-report" },
+    { name: "PwC — Global AI Jobs Barometer 2026", when: "published June 2026", url: "https://www.pwc.com/gx/en/services/ai/ai-jobs-barometer.html" },
+    { name: "OECD — Employment Outlook 2026 & AI adoption releases", when: "June 2026 / January 2026", url: "https://www.oecd.org/en/publications/oecd-employment-outlook-2026_7e710f54-en.html" },
+    { name: "McKinsey — The State of AI", when: "2026 edition", url: "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai" },
+    { name: "World Economic Forum — Future of Jobs Report 2025", when: "published January 2025; next edition expected late 2026/early 2027", url: "https://reports.weforum.org/docs/WEF_Future_of_Jobs_Report_2025.pdf" },
+    { name: "METR — Task-completion time horizons", when: "updated February 2026", url: "https://metr.org/time-horizons/" },
+    { name: "Anthropic — Economic Index", when: "reports January, March, June 2026", url: "https://www.anthropic.com/economic-index" },
+    { name: "Goldman Sachs Research — AI and the labour market", when: "2026", url: "https://www.goldmansachs.com/insights/articles/how-will-ai-affect-the-us-labor-market" },
+    { name: "Stanford Digital Economy Lab / ADP — Canaries in the Coal Mine (updates)", when: "through June 2026", url: "https://digitaleconomy.stanford.edu/" },
+    { name: "Gallup — AI use at work", when: "2026", url: "https://www.gallup.com/workplace/" }
+  ]
+};
+/* =================== END DATA =================== */
+</script>
+
+<style>
+/* ===================== DESIGN ===================== */
+/* The restaurant. No quarterly edits below this line. */
+:root{
+  --ink:#141b2e;          /* ink-navy */
+  --paper:#faf7f1;        /* paper daylight */
+  --paper2:#f1ece2;
+  --line:#d8d0c0;
+  --muted:#5c6272;
+  --accel:#b3422e;        /* the four climates */
+  --plateau:#7a7466;
+  --twospeed:#2e5e8c;
+  --premium:#a07c2c;
+  --gold:#a07c2c;
+  --max:900px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font:17px/1.65 Georgia,'Times New Roman',serif;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+
+/* banner */
+.banner{background:var(--ink);color:var(--paper);padding:10px 0;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:14px;letter-spacing:.4px}
+.banner .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.banner strong{color:#e8c877}
+
+header.masthead{padding:56px 0 40px;border-bottom:1px solid var(--line)}
+.kicker{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  text-transform:uppercase;letter-spacing:2.5px;font-size:12px;color:var(--muted)}
+h1{font-size:44px;line-height:1.1;font-weight:400;margin:10px 0 16px}
+.standfirst{font-size:20px;color:#39415a;max-width:660px}
+
+section{padding:44px 0;border-bottom:1px solid var(--line)}
+h2{font-size:28px;font-weight:400;margin-bottom:6px}
+.chapter-tag{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12.5px;color:var(--muted);letter-spacing:.5px;margin-bottom:18px}
+p.lede{margin-bottom:18px;max-width:680px}
+.asof{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* headline strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;margin-top:8px}
+.stat{background:var(--paper2);border:1px solid var(--line);padding:18px;border-radius:4px}
+.stat .n{font-size:34px;line-height:1.05}
+.stat .l{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:13.5px;color:#39415a;margin:8px 0 6px}
+.stat .s{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:11.5px;color:var(--muted)}
+
+/* evidence lists */
+ul.ev{list-style:none;max-width:720px}
+ul.ev li{padding:14px 0;border-top:1px dotted var(--line);
+  display:flex;justify-content:space-between;gap:18px;align-items:baseline}
+ul.ev li:first-child{border-top:none}
+ul.ev .src{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;color:var(--muted);text-align:right;min-width:150px}
+
+.pilehead{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:13px;text-transform:uppercase;letter-spacing:1.5px;margin:26px 0 2px}
+.falling .pilehead{color:var(--accel)}
+.holding .pilehead{color:var(--twospeed)}
+.rising .pilehead{color:var(--gold)}
+
+/* postcards */
+.postcard{border:1px solid var(--line);border-radius:6px;background:#fff;
+  margin:22px 0;overflow:hidden}
+.postcard>.head{padding:20px 22px 16px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+.postcard h3{font-size:23px;font-weight:400}
+.postcard .story{font-style:italic;color:#39415a;padding:16px 22px 0;max-width:700px}
+.postcard .body{padding:16px 22px 22px}
+.dial{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:13px;display:flex;align-items:center;gap:10px}
+.dial .pips{display:flex;gap:3px}
+.dial .pip{width:14px;height:8px;border-radius:2px;background:var(--paper2);
+  border:1px solid var(--line)}
+.reading-label{font-weight:600}
+.pc-accel .pip.on{background:var(--accel);border-color:var(--accel)}
+.pc-plateau .pip.on{background:var(--plateau);border-color:var(--plateau)}
+.pc-twospeed .pip.on{background:var(--twospeed);border-color:var(--twospeed)}
+.pc-premium .pip.on{background:var(--premium);border-color:var(--premium)}
+.pc-accel h3{color:var(--accel)} .pc-plateau h3{color:var(--plateau)}
+.pc-twospeed h3{color:var(--twospeed)} .pc-premium h3{color:var(--premium)}
+.subhead{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);
+  margin:18px 0 8px}
+.postcard ul{margin-left:20px;max-width:680px}
+.postcard ul li{margin:6px 0}
+.counter{background:var(--paper2);border-left:3px solid var(--line);
+  padding:10px 14px;margin-top:14px;font-size:15.5px;max-width:680px}
+
+/* signal checklists (the game) */
+.signals label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;
+  cursor:pointer;max-width:680px}
+.signals input{margin-top:5px;accent-color:var(--ink)}
+.gridq{margin-top:16px;padding:12px 16px;background:var(--ink);color:var(--paper);
+  border-radius:4px;font-size:15.5px;max-width:680px}
+.gridq b{color:#e8c877;font-weight:600}
+
+/* the personal read-out */
+#readout{background:#fff;border:1px solid var(--line);border-radius:6px;
+  padding:22px;margin-top:10px}
+#readout .bars{margin:14px 0}
+.bar-row{display:flex;align-items:center;gap:12px;margin:8px 0;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px}
+.bar-row .nm{min-width:170px}
+.bar-track{flex:1;height:10px;background:var(--paper2);border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width .3s}
+.b-accel{background:var(--accel)} .b-plateau{background:var(--plateau)}
+.b-twospeed{background:var(--twospeed)} .b-premium{background:var(--premium)}
+#verdict{font-style:italic;color:#39415a}
+
+/* horizon table */
+table.hz{width:100%;border-collapse:collapse;margin-top:8px}
+table.hz td{padding:14px 12px;border-top:1px dotted var(--line);vertical-align:top}
+table.hz td.y{font-size:20px;white-space:nowrap;width:130px}
+table.hz .conf{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;color:var(--muted);display:block;margin-top:6px}
+
+/* lane finder */
+.lane-inputs{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0 6px}
+.lane-inputs .fld{flex:1;min-width:240px}
+.lane-inputs label{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12.5px;color:var(--muted);margin-bottom:5px;letter-spacing:.3px}
+.lane-inputs input{width:100%;padding:11px 13px;border:1px solid var(--line);
+  border-radius:4px;background:#fff;font:16px Georgia,serif;color:var(--ink)}
+.btn{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--ink);color:var(--paper);border:none;border-radius:4px;
+  padding:12px 22px;font-size:14.5px;cursor:pointer;letter-spacing:.3px}
+.btn:hover{opacity:.9}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.lanecards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:16px;margin-top:20px}
+.lanecard{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px}
+.lanecard h3{font-size:20px;font-weight:400;margin-bottom:2px}
+.lanetag{display:inline-block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:11px;text-transform:uppercase;letter-spacing:1.5px;padding:3px 9px;
+  border-radius:10px;margin:6px 0 10px}
+.lane-fast{background:#f4ddd7;color:var(--accel)}
+.lane-mid{background:#e6e0d2;color:#6b6353}
+.lane-slow{background:#dbe4ee;color:var(--twospeed)}
+.lanecard .mods{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.modchip{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:11.5px;padding:3px 9px;border-radius:10px;background:var(--paper2);
+  border:1px solid var(--line)}
+.crossing{background:var(--ink);color:var(--paper);border-radius:6px;
+  padding:18px 22px;margin-top:16px}
+.crossing b{color:#e8c877;font-weight:600}
+#brief-wrap{margin-top:18px}
+#brief{width:100%;min-height:180px;padding:14px;border:1px solid var(--line);
+  border-radius:4px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;
+  color:var(--ink);background:#fff}
+.weights-note{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;color:var(--muted);margin-top:10px}
+
+/* changelog + footer */
+.log{max-width:720px}
+.log .entry{padding:14px 0;border-top:1px dotted var(--line)}
+.log .q{font-weight:600}
+footer{padding:40px 0 70px;color:var(--muted);font-size:14px}
+footer .nots{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12.5px;letter-spacing:.3px;margin-bottom:20px}
+footer ul.srcs{list-style:none;margin-top:10px}
+footer ul.srcs li{padding:4px 0}
+footer a{color:var(--twospeed)}
+@media(max-width:640px){
+  h1{font-size:33px}
+  ul.ev li{flex-direction:column;gap:4px}
+  ul.ev .src{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="banner"><div class="wrap">
+  <span>Last updated: <strong id="b-quarter"></strong> · <span id="b-date"></span></span>
+  <span>Next refresh: <span id="b-next"></span> · every quarter, kept like a client meeting</span>
+</div></div>
+
+<header class="masthead"><div class="wrap">
+  <div class="kicker">TomorrowWork · the companion site</div>
+  <h1>The Living Tunnel</h1>
+  <p class="standfirst">The book gave you the method — five moves, four postcards, a grid, and a plan you made. This page is the part that moves: the current, sourced state of the AI climate, refreshed every quarter so your plan never gets tested against last year's weather. Prepare, never predict — but be current.</p>
+</div></header>
+
+<section><div class="wrap">
+  <h2>The quarter in six numbers</h2>
+  <div class="chapter-tag">Every figure sourced and dated. If a number has no date, don't trust it — here or anywhere.</div>
+  <div class="stats" id="stats"></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The builder barometer</h2>
+  <div class="chapter-tag">Chapter 3 · Tool 3 — the toolmakers live about six months ahead of every market they're about to rearrange</div>
+  <p class="lede">One question, asked monthly: <em>what did the builders just stop doing by hand?</em> Here's the current answer, plus the capability readings behind it.</p>
+  <ul class="ev" id="barometer"></ul>
+  <div class="subhead">What builders stopped doing by hand this quarter</div>
+  <ul class="ev" id="byhand"></ul>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The task audit, repriced</h2>
+  <div class="chapter-tag">Chapter 3 · the three piles — what the labour data currently says about Falling, Holding and Rising</div>
+  <p class="lede">Your piles are yours; nobody's spreadsheet knows your job. But the piles have market prices, and the prices moved this quarter. Use these to pressure-test your sort — not to replace it.</p>
+  <div class="falling"><div class="pilehead">Falling — going cheap</div><ul class="ev" id="pile-falling"></ul></div>
+  <div class="holding"><div class="pilehead">Holding — staying human, structurally</div><ul class="ev" id="pile-holding"></ul></div>
+  <div class="rising"><div class="pilehead">Rising — more valuable because the falling pile got cheap</div><ul class="ev" id="pile-rising"></ul></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Adoption: the deployment gap</h2>
+  <div class="chapter-tag">Context for every postcard — capability is not the same as deployment, and the gap between them is where your time comes from</div>
+  <div class="subhead">Organisations</div>
+  <ul class="ev" id="adopt-ent"></ul>
+  <div class="subhead">People</div>
+  <ul class="ev" id="adopt-people"></ul>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Personalise before use — your lanes</h2>
+  <div class="chapter-tag">Chapter 7 · Tool 7 — "The Acceleration reads differently for a Manchester employment lawyer than for a Berlin UX designer"</div>
+  <p class="lede">The postcards below are the base set; the test only works on futures specific enough to feel weather on your skin. Name the industry you're in — and, if you're eyeing a move, the one you'd cross to. The page blends your lane's evidence into your read-out, with the weighting shown. If your industry isn't on the board, the desk-research brief at the bottom gets you the same answer by hand.</p>
+  <div class="lane-inputs">
+    <div class="fld"><label for="lane-current">The industry you're in</label>
+      <input id="lane-current" list="lane-list" placeholder="e.g. marketing, law, healthcare, construction…"></div>
+    <div class="fld"><label for="lane-target">The one you're eyeing (optional)</label>
+      <input id="lane-target" list="lane-list" placeholder="leave blank if you're holding"></div>
+    <div class="fld" style="flex:0;align-self:flex-end;min-width:auto">
+      <button class="btn" onclick="TT.lanes()">Read my lanes</button></div>
+  </div>
+  <datalist id="lane-list"></datalist>
+  <div id="lane-out"></div>
+  <div id="brief-wrap" style="display:none">
+    <div class="subhead">The desk-research brief — for industries not on the board, or for going deeper</div>
+    <p class="lede" style="font-size:15.5px">Copy this into any capable AI assistant (or hand it to a librarian with patience). It asks the questions this page asks, about your world specifically.</p>
+    <textarea id="brief" readonly></textarea>
+    <div style="margin-top:8px"><button class="btn ghost" onclick="TT.copyBrief()">Copy the brief</button>
+    <span class="asof" id="brief-copied"></span></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The four postcards — this quarter's readings</h2>
+  <div class="chapter-tag">Chapter 7 · Tools 7–9 — the wind tunnel's test rigs, with the dials set to today</div>
+  <p class="lede">The postcards are test rigs, not predictions — you still don't get to choose which future arrives. But each quarter the evidence moves, and the dials below say which way. Tick the signals you've noticed <em>from your own seat</em>; your personal read-out builds at the bottom. Then take the question in each dark box to the matching column of your grid.</p>
+  <div id="postcards"></div>
+
+  <h2 style="margin-top:36px">Your read-out</h2>
+  <div class="chapter-tag">This quarter's weather, your lane, and the signals you've ticked — blended, weighting shown. The start of your 90-minute quarterly review, not the end of it</div>
+  <div id="readout">
+    <div class="bars" id="bars"></div>
+    <p id="verdict"></p>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The horizon: two to five years out</h2>
+  <div class="chapter-tag">What serious forecasters currently expect — held lightly, dated clearly</div>
+  <table class="hz" id="horizon"></table>
+</div></section>
+
+<section><div class="wrap">
+  <h2>This quarter, in one paragraph</h2>
+  <div class="chapter-tag">The bulletin in brief — the full issue travels separately</div>
+  <p class="lede" id="bulletin"></p>
+  <div class="subhead">Changelog</div>
+  <div class="log" id="changelog"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="nots">Not financial advice · not legal advice · no AI predictions sold here · the role is redundant, never the person · no streaks</div>
+  <div>Sources for this edition, with their usual publication rhythm:</div>
+  <ul class="srcs" id="sources"></ul>
+  <div style="margin-top:24px">TomorrowWork · from the Tomorrow books · this page works offline once loaded, on purpose</div>
+</div></footer>
+
+<script>
+/* ===================== RENDERING =====================
+   Draws the page from SITE_DATA. No quarterly edits here. */
+(function(){
+  const d = SITE_DATA;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  /* banner */
+  $("b-quarter").textContent = d.meta.quarter;
+  $("b-date").textContent = d.meta.updated;
+  $("b-next").textContent = d.meta.nextRefresh;
+
+  /* headline strip */
+  $("stats").innerHTML = d.headline.map(h =>
+    '<div class="stat"><div class="n">'+esc(h.number)+'</div>'+
+    '<div class="l">'+esc(h.label)+'</div>'+
+    '<div class="s">'+esc(h.source)+' · as of '+esc(h.asOf)+'</div></div>').join("");
+
+  /* evidence list helper */
+  const ev = rows => rows.map(r =>
+    '<li><span>'+esc(r.stat)+'</span><span class="src">'+esc(r.source)+
+    '<br><span class="asof">as of '+esc(r.asOf)+'</span></span></li>').join("");
+
+  $("barometer").innerHTML = ev(d.barometer.readings);
+  $("byhand").innerHTML = d.barometer.stoppedDoingByHand.map(s=>'<li><span>'+esc(s)+'</span></li>').join("");
+  $("pile-falling").innerHTML = ev(d.audit.falling);
+  $("pile-holding").innerHTML = ev(d.audit.holding);
+  $("pile-rising").innerHTML = ev(d.audit.rising);
+  $("adopt-ent").innerHTML = ev(d.adoption.enterprise);
+  $("adopt-people").innerHTML = ev(d.adoption.people);
+
+  /* postcards — the game layer */
+  const pcClass = {acceleration:"pc-accel",plateau:"pc-plateau",twospeed:"pc-twospeed",humanpremium:"pc-premium"};
+  const pips = m => { // momentum −2..+2 → 5 pips, lit from left
+    const lit = m + 3; // −2→1 pip … +2→5 pips
+    let out = '<span class="pips">';
+    for (let i=1;i<=5;i++) out += '<span class="pip'+(i<=lit?' on':'')+'"></span>';
+    return out+'</span>';
+  };
+  $("postcards").innerHTML = d.climates.map(c =>
+    '<div class="postcard '+pcClass[c.id]+'">'+
+      '<div class="head"><h3>'+esc(c.name)+'</h3>'+
+      '<div class="dial">'+pips(c.momentum)+
+      '<span class="reading-label">'+esc(c.reading)+'</span>'+
+      '<span class="asof">as of '+esc(d.meta.quarter)+'</span></div></div>'+
+      '<div class="story">“'+esc(c.postcard)+'”</div>'+
+      '<div class="body">'+
+        '<p>'+esc(c.whyNow)+'</p>'+
+        '<div class="subhead">The evidence that moved it</div>'+
+        '<ul>'+c.evidence.map(e=>'<li>'+esc(e)+'</li>').join("")+'</ul>'+
+        '<div class="counter"><em>The other hand:</em> '+esc(c.counter)+'</div>'+
+        '<div class="subhead">Early signals — tick what you\'ve seen from your seat</div>'+
+        '<div class="signals">'+c.signals.map((s,i)=>
+          '<label><input type="checkbox" data-climate="'+c.id+'" onchange="TT.update()"><span>'+esc(s)+'</span></label>').join("")+'</div>'+
+        '<div class="gridq"><b>Take to your grid:</b> '+esc(c.gridQuestion)+'</div>'+
+      '</div></div>').join("");
+
+  /* horizon */
+  $("horizon").innerHTML = d.horizon.map(h =>
+    '<tr><td class="y">'+esc(h.year)+'</td><td>'+esc(h.note)+
+    '<span class="conf">Confidence: '+esc(h.confidence)+'</span></td></tr>').join("");
+
+  /* bulletin + changelog */
+  $("bulletin").textContent = d.bulletinSummary;
+  $("changelog").innerHTML = d.changelog.map(c =>
+    '<div class="entry"><span class="q">'+esc(c.quarter)+'</span> · '+esc(c.date)+
+    ' — '+esc(c.changes)+'</div>').join("");
+
+  /* sources */
+  $("sources").innerHTML = d.sources.map(s =>
+    '<li>'+(s.url?'<a href="'+esc(s.url)+'">'+esc(s.name)+'</a>':esc(s.name))+
+    ' <span class="asof">('+esc(s.when)+')</span></li>').join("");
+
+  /* the lane finder + personal read-out */
+  const P = d.personalisation;
+  const climateKey = {acceleration:"acceleration",plateau:"plateau",twospeed:"twospeed",humanpremium:"humanpremium"};
+
+  /* datalist of known industries */
+  document.getElementById("lane-list").innerHTML =
+    P.industries.map(i=>'<option value="'+esc(i.name)+'">').join("");
+
+  const findIndustry = txt => {
+    if(!txt) return null;
+    const t = txt.trim().toLowerCase();
+    if(!t) return null;
+    const words = t.split(/[^a-z&+-]+/).filter(Boolean);
+    let best=null, bestScore=0;
+    for(const ind of P.industries){
+      const terms=[ind.name.toLowerCase(), ...ind.aliases.map(a=>a.toLowerCase())];
+      let score=0;
+      for(const n of terms){
+        if(t===n) score=Math.max(score,3);                              /* exact */
+        else if(n.length>3 && (t.includes(n)||n.includes(t))) score=Math.max(score,2); /* substring, long terms only */
+        else if(words.includes(n)) score=Math.max(score,2);             /* short terms ("it","law") need a whole word */
+        else if(words.some(w=>w.length>4&&n.length>4&&
+          (w.startsWith(n.slice(0,5))||n.startsWith(w.slice(0,5)))))
+          score=Math.max(score,1);                                      /* stems: copywriter ~ copywriting */
+      }
+      if(score>bestScore){ best=ind; bestScore=score; }
+    }
+    return best;
+  };
+
+  const laneCard = (ind, role) =>
+    '<div class="lanecard"><div class="asof">'+role+'</div>'+
+    '<h3>'+esc(ind.name)+'</h3>'+
+    '<span class="lanetag lane-'+ind.lane+'">'+ind.lane+' lane</span>'+
+    '<p style="font-size:15px;color:#39415a">'+esc(ind.laneNote)+'</p>'+
+    '<div class="subhead">Adoption</div>'+
+    '<p style="font-size:15px">'+esc(ind.adoption.stat)+' <span class="asof">('+esc(ind.adoption.source)+', '+esc(ind.adoption.asOf)+')</span></p>'+
+    '<div class="subhead">Your piles, tilted</div>'+
+    '<p style="font-size:15px">'+esc(ind.exposure)+'</p>'+
+    '<div class="subhead">The numbers</div>'+
+    ind.stats.map(s=>'<p style="font-size:15px;margin-bottom:6px">'+esc(s.stat)+
+      ' <span class="asof">('+esc(s.source)+', '+esc(s.asOf)+')</span></p>').join("")+
+    '<div class="subhead">Where the postcards bite, in this lane</div>'+
+    '<div class="mods">'+d.climates.map(c=>{
+      const m=ind.mods[climateKey[c.id]];
+      const word=m>0?"bites harder":m<0?"bites less":"as overall";
+      return '<span class="modchip">'+esc(c.name.replace("The ",""))+': '+word+'</span>';
+    }).join("")+'</div>'+
+    '<div class="subhead">The puck note</div>'+
+    '<p style="font-size:15px">'+esc(ind.puckNote)+'</p></div>';
+
+  const crossingVerdict = (cur,tgt) => {
+    const bits=[];
+    if(cur.lane!==tgt.lane)
+      bits.push("You'd be crossing lanes — "+cur.lane+" to "+tgt.lane+". The Two-Speed postcard says the winners are the people fluent in the fast world's tools and credible in the slow world's rooms; a deliberate crossing is exactly that, run on purpose.");
+    else
+      bits.push("Same lane, both sides ("+cur.lane+"). A lane-change this is not — so the move has to earn its keep on the task mix, not the weather.");
+    if(cur.mods.acceleration>=1 && tgt.mods.acceleration>=1)
+      bits.push("<b>Puck-rule flag:</b> both industries sit in the Acceleration's path — this is a lateral into an equally exposed craft, which the book warns buys you nothing. The falling piles travel with you.");
+    if(tgt.mods.humanpremium>cur.mods.humanpremium)
+      bits.push("The move adds Human-Premium shelter — more of the target's value sits in presence and accountable hands than where you are now. That's a tailwind, and it's the direction the puck rules point.");
+    if(tgt.mods.acceleration<cur.mods.acceleration)
+      bits.push("The target lane takes the Acceleration more slowly — shelter, not immunity. Bring your fast-lane fluency with you; it's the scarce thing there.");
+    return '<div class="crossing"><b>The crossing:</b> '+bits.join(" ")+'</div>';
+  };
+
+  window.TT = {
+    current:null, target:null,
+
+    lanes(){
+      const curTxt=document.getElementById("lane-current").value;
+      const tgtTxt=document.getElementById("lane-target").value;
+      this.current=findIndustry(curTxt);
+      this.target=findIndustry(tgtTxt);
+      let out="";
+      if(this.current||this.target){
+        out+='<div class="lanecards">';
+        if(this.current) out+=laneCard(this.current,"WHERE YOU ARE");
+        if(this.target) out+=laneCard(this.target,"WHERE YOU'RE LOOKING");
+        out+='</div>';
+        if(this.current&&this.target) out+=crossingVerdict(this.current,this.target);
+      }
+      const misses=[];
+      if(curTxt.trim()&&!this.current) misses.push(curTxt.trim());
+      if(tgtTxt.trim()&&!this.target) misses.push(tgtTxt.trim());
+      if(misses.length)
+        out+='<p class="lede" style="margin-top:16px">“'+esc(misses.join("” and “"))+
+          '” isn\'t on the board yet — no matter. The desk-research brief below is pre-filled for it; the answer takes one AI session or an honest afternoon.</p>';
+      document.getElementById("lane-out").innerHTML=out;
+      /* the brief appears once they've engaged */
+      if(curTxt.trim()||tgtTxt.trim()){
+        document.getElementById("brief-wrap").style.display="block";
+        this.buildBrief(curTxt.trim(),tgtTxt.trim());
+      }
+      this.update();
+    },
+
+    buildBrief(cur,tgt){
+      const q=d.meta.quarter;
+      document.getElementById("brief").value =
+"Desk-research brief — the TomorrowWork climate test, personalised.\n"+
+"My industry: "+(cur||"[fill in]")+(tgt?("\nIndustry I'm considering moving to: "+tgt):"")+"\n"+
+"Quarter: "+q+"\n\n"+
+"Using current, dated, primary sources (OECD, Stanford AI Index, PwC AI Jobs Barometer, WEF Future of Jobs, McKinsey State of AI, Anthropic Economic Index, national statistics, plus this industry's own trade bodies), find for EACH industry above:\n"+
+"1. AI adoption rate in this industry, vs the cross-industry average — with dates.\n"+
+"2. Task-level exposure: which of this industry's tasks are Falling (AI does most of it now/soon, cheap), Holding (accountability, presence, relationships, liability), Rising (judgement, taste, direction, orchestration — scarcer because the falling pile got cheap).\n"+
+"3. Entry-level and junior hiring trends in this industry, last 12 months.\n"+
+"4. Wage/premium data: what AI skills or judgement-heavy roles now pay here vs before.\n"+
+"5. The builder barometer: what are developers and toolmakers serving this industry routinely automating right now — what did they just stop doing by hand?\n\n"+
+"Then re-score these four futures FOR THIS INDUSTRY on a scale of −2 (receding fast) to +2 (landing early), each with three dated bullets of evidence and one honest counter-argument:\n"+
+"• The Acceleration — capability keeps jumping, deployment catches up, supervision jobs go to a fraction of today's producers.\n"+
+"• The Long Plateau — capability stalls but AI-justified restructures continue anyway.\n"+
+"• The Two-Speed World — some sectors/countries transform in three years, others barely move; fate = lane.\n"+
+"• The Human Premium — trust in unverified online work collapses; in-person, accountable, provably-human work reprices upward.\n\n"+
+"Rules: date every number. Prefer primary sources. Mixed rule applies: every future gets its counter-evidence. No predictions — evidence weights only.";
+    },
+
+    copyBrief(){
+      const t=document.getElementById("brief");
+      t.select();
+      try{ navigator.clipboard.writeText(t.value); }catch(e){ document.execCommand("copy"); }
+      document.getElementById("brief-copied").textContent="copied";
+      setTimeout(()=>document.getElementById("brief-copied").textContent="",2000);
+    },
+
+    update(){
+      const W=P.weights, lane=this.current;
+      const bars = d.climates.map(c => {
+        const boxes = document.querySelectorAll('input[data-climate="'+c.id+'"]');
+        const seen = Array.from(boxes).filter(b=>b.checked).length;
+        const total = boxes.length;
+        const world = (c.momentum + 2) / 4;          /* −2..+2 → 0..1 */
+        const you = total ? seen/total : 0;
+        let score, mix;
+        if(lane){
+          const mod=(lane.mods[climateKey[c.id]]+1)/2; /* −1..+1 → 0..1 */
+          score = W.world*world + W.lane*mod + W.signals*you;
+          mix = Math.round(W.world*100)+"% weather · "+Math.round(W.lane*100)+"% your lane · "+Math.round(W.signals*100)+"% your signals";
+        } else {
+          score = (W.world+W.lane)*world + W.signals*you;
+          mix = Math.round((W.world+W.lane)*100)+"% weather · "+Math.round(W.signals*100)+"% your signals";
+        }
+        return { c, seen, total, score, mix };
+      });
+      const bcls = {acceleration:"b-accel",plateau:"b-plateau",twospeed:"b-twospeed",humanpremium:"b-premium"};
+      $("bars").innerHTML = bars.map(b =>
+        '<div class="bar-row"><span class="nm">'+esc(b.c.name)+'</span>'+
+        '<div class="bar-track"><div class="bar-fill '+bcls[b.c.id]+'" style="width:'+
+        Math.round(b.score*100)+'%"></div></div>'+
+        '<span class="asof">'+b.seen+'/'+b.total+' signals</span></div>').join("")+
+        '<div class="weights-note">Weighting: '+bars[0].mix+
+        (lane?' — lane: '+esc(lane.name):' — name your industry above to add your lane')+'</div>';
+      const anySeen = bars.some(b=>b.seen>0);
+      const top = bars.slice().sort((a,b)=>b.score-a.score)[0];
+      let v;
+      if(!anySeen && !lane)
+        v = "Nothing ticked, no lane named. The bars show this quarter's overall weather alone; your industry and your seat's signals are the other half of the read.";
+      else if(!anySeen)
+        v = "Lane set ("+lane.name+"), no signals ticked yet. The bars now blend the overall weather with your industry's evidence — the checklists above add what only you can see.";
+      else
+        v = "From where you're sitting"+(lane?" in "+lane.name:"")+", the postcard currently landing looks most like "+top.c.name+
+            ". Not a prophecy — a design instruction. Open your grid at that column, find the breaks, and strengthen one killer cell before October.";
+      $("verdict").textContent = v;
+    }
+  };
+  TT.update();
+})();
+</script>
+</body>
+</html>
