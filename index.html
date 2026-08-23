@@ -6,82 +6,327 @@
 <title>The Tomorrow Method</title>
 <meta name="description" content="The scenario-planning discipline corporations have used for fifty years — handed to the people they plan about. Three books: brands, bodies, careers.">
 <style>
+/* ==================================================================
+   THE TOMORROW METHOD — landing page
+   ==================================================================
+   The page is one continuous scroll in four movements:
+     1. Hero        — layered weather drifting at different speeds
+     2. Method      — the one-method-three-lands statement
+     3. The stack   — three book panels that slide over one another
+     4. The tunnel  — rings that fly past as you approach the CTA
+   All motion is driven by scroll position in one requestAnimationFrame
+   loop at the bottom of the file. No libraries, nothing to install.
+   Anyone with reduced-motion switched on (or no JavaScript) gets the
+   same content, still, and readable.
+   ================================================================== */
 :root{
   --ink:#141b2e; --paper:#faf7f1; --paper2:#f1ece2; --line:#d8d0c0;
-  --muted:#5c6272; --gold:#a07c2c; --blue:#2e5e8c; --red:#b3422e; --max:860px;
+  --muted:#5c6272; --gold:#a07c2c; --blue:#2e5e8c; --red:#b3422e; --max:1080px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font:18px/1.65 Georgia,'Times New Roman',serif}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);
+  font:18px/1.65 Georgia,'Times New Roman',serif;overflow-x:hidden}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
 .kicker{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  text-transform:uppercase;letter-spacing:2.5px;font-size:12px;color:var(--muted)}
-header{padding:90px 0 60px;border-bottom:1px solid var(--line)}
-h1{font-size:52px;line-height:1.08;font-weight:400;margin:14px 0 20px}
-.standfirst{font-size:21px;color:#39415a;max-width:640px}
-section{padding:52px 0;border-bottom:1px solid var(--line)}
-h2{font-size:30px;font-weight:400;margin-bottom:18px}
-p{margin-bottom:16px;max-width:660px}
-.books{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:26px}
-.book{background:#fff;border:1px solid var(--line);border-radius:6px;padding:26px 24px;
-  display:flex;flex-direction:column}
-.book .land{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  font-size:11.5px;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
-.book h3{font-size:24px;font-weight:400;margin-bottom:10px}
-.book p{font-size:15.5px;color:#39415a;flex:1}
-.book .status{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  font-size:12.5px;color:var(--muted);margin-top:14px}
-.b-brand .land{color:var(--gold)} .b-you .land{color:var(--blue)} .b-work .land{color:var(--red)}
-.cta{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;
-  padding:13px 24px;border-radius:4px;margin-top:8px}
-.cta:hover{opacity:.92}
+  text-transform:uppercase;letter-spacing:3px;font-size:12px;color:var(--muted)}
 a{color:var(--blue)}
-footer{padding:44px 0 80px;color:var(--muted);font-size:14.5px}
-@media(max-width:640px){h1{font-size:36px}}
+em{font-style:italic}
+
+/* paper grain over everything — the thing that makes flat colour feel printed */
+body::after{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E")}
+
+/* thin reading-progress line along the top */
+.progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:70;background:transparent}
+.progress span{display:block;height:100%;width:100%;background:var(--ink);
+  transform:scaleX(0);transform-origin:0 50%}
+
+/* ---------------- 1 · HERO ---------------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;
+  overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-layers{position:absolute;inset:0;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);will-change:transform}
+.blob-gold{width:44vmax;height:44vmax;top:-12vmax;right:-10vmax;
+  background:radial-gradient(circle,rgba(160,124,44,.20),transparent 65%)}
+.blob-blue{width:52vmax;height:52vmax;bottom:-18vmax;left:-14vmax;
+  background:radial-gradient(circle,rgba(46,94,140,.16),transparent 65%)}
+.blob-red{width:30vmax;height:30vmax;top:30%;left:56%;
+  background:radial-gradient(circle,rgba(179,66,46,.12),transparent 65%)}
+.ghost{position:absolute;bottom:-.18em;left:-.04em;white-space:nowrap;
+  font-size:23vw;line-height:1;letter-spacing:.02em;font-weight:400;
+  color:transparent;-webkit-text-stroke:1px rgba(20,27,46,.10);will-change:transform}
+.hero-inner{position:relative;z-index:2;padding-top:9vh;padding-bottom:14vh;will-change:transform,opacity}
+h1{font-size:clamp(44px,7.6vw,112px);line-height:1.02;font-weight:400;
+  letter-spacing:-.015em;margin:22px 0 30px;max-width:14em}
+h1 em{color:var(--muted)}
+.standfirst{font-size:clamp(18px,1.9vw,23px);color:#39415a;max-width:36em}
+.scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;
+  letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);text-align:center}
+.scroll-cue::after{content:"";display:block;width:1px;height:44px;margin:10px auto 0;
+  background:linear-gradient(var(--muted),transparent);animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:scaleY(.3);transform-origin:top}50%{transform:scaleY(1)}}
+
+/* ---------------- 2 · METHOD ---------------- */
+.method{padding:22vh 0 18vh;border-bottom:1px solid var(--line);background:var(--paper)}
+.bigline{font-size:clamp(28px,4.2vw,56px);line-height:1.16;font-weight:400;
+  max-width:20em;margin:20px 0 28px}
+.method p.small{max-width:38em;color:#39415a}
+
+/* ---------------- 3 · THE STACK ---------------- */
+/* Each panel is a full viewport, sticky at the top; the next one
+   slides over it, and the loop below eases the covered one back. */
+.panel{position:sticky;top:0;min-height:100svh;display:flex;align-items:center;
+  border-top:1px solid var(--line)}
+.p-brand{background:#f7f0df}
+.p-you{background:#e9eff5}
+.p-work{background:#f6ebe7}
+.panel-inner{width:100%;will-change:transform;padding:11vh 0}
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid rgba(20,27,46,.18);padding-bottom:14px;margin-bottom:5vh}
+.land{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:13px;text-transform:uppercase;letter-spacing:3px}
+.idx{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:13px;color:var(--muted);letter-spacing:2px}
+.p-brand .land{color:var(--gold)} .p-you .land{color:var(--blue)} .p-work .land{color:var(--red)}
+.panel h3{font-size:clamp(46px,7vw,96px);font-weight:400;letter-spacing:-.015em;
+  line-height:1;margin-bottom:4vh}
+.panel .desc{font-size:clamp(17px,1.8vw,21px);color:#39415a;max-width:33em;margin-bottom:22px}
+.status{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:13px;color:var(--muted);letter-spacing:.5px}
+
+/* ---------------- 4 · THE TUNNEL ---------------- */
+.tunnel{position:relative;height:280vh;background:var(--ink);color:var(--paper)}
+.tunnel-sticky{position:sticky;top:0;height:100svh;overflow:hidden;
+  display:flex;align-items:center}
+.rings{position:absolute;inset:0;pointer-events:none}
+.ring{position:absolute;top:50%;left:50%;width:96vmin;height:64vmin;
+  transform:translate(-50%,-50%);border:1px solid rgba(250,247,241,.22);
+  border-radius:22px;will-change:transform,opacity}
+.ring.rg{border-color:rgba(160,124,44,.55)}
+.ring.rb{border-color:rgba(94,144,190,.55)}
+.ring.rr{border-color:rgba(214,106,88,.5)}
+.tunnel-copy{position:relative;z-index:2;text-align:center;margin:0 auto;
+  max-width:760px;padding:0 28px;will-change:transform,opacity}
+.tunnel-copy .kicker{color:rgba(250,247,241,.6)}
+.tunnel-copy h2{font-size:clamp(32px,4.6vw,60px);font-weight:400;line-height:1.12;
+  margin:18px 0 24px}
+.tunnel-copy p{color:rgba(250,247,241,.78);font-size:clamp(16.5px,1.7vw,20px);
+  margin-bottom:34px}
+.cta{display:inline-block;background:var(--paper);color:var(--ink);text-decoration:none;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15.5px;
+  padding:15px 30px;border-radius:4px;transition:transform .25s ease,box-shadow .25s ease}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+
+/* ---------------- FOOTER ---------------- */
+footer{padding:54px 0 90px;color:var(--muted);font-size:14.5px;background:var(--paper)}
+
+/* ---------------- MOTION SYSTEM ---------------- */
+/* Reveals start hidden only once JS confirms it's running. */
+.js .reveal{opacity:0;transform:translateY(30px);
+  transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1)}
+.js .reveal.d1{transition-delay:.12s}
+.js .reveal.d2{transition-delay:.24s}
+.js .reveal.inview{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .reveal{opacity:1;transform:none;transition:none}
+  .scroll-cue::after{animation:none}
+  .panel{position:relative;min-height:0}
+  .panel-inner{padding:12vh 0}
+  .tunnel{height:auto}
+  .tunnel-sticky{position:relative;height:auto;padding:18vh 0}
+  .rings{display:none}
+}
+@media (max-width:640px){
+  .scroll-cue{display:none}
+  .hero-inner{padding-bottom:8vh}
+  .ghost{font-size:34vw;bottom:.1em}
+  .panel-head{margin-bottom:4vh}
+  .ring{width:92vmin;height:110vmin}
+}
 </style>
 </head>
 <body>
 
-<header><div class="wrap">
-  <div class="kicker">The Tomorrow Method</div>
-  <h1>You can't predict the future.<br>You can be ready for every version of it.</h1>
-  <p class="standfirst">For fifty years, corporations have used scenario planning to prepare for futures they couldn't forecast — building several plausible tomorrows and stress-testing every plan against the lot. The Tomorrow Method is that discipline, walked down from the executive floor and handed to the people those plans are usually <em>about</em>.</p>
-</div></header>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 
-<section><div class="wrap">
-  <h2>One method, three lands</h2>
-  <p>Each book points the same engine at a different kind of unpredictable weather. Same grammar throughout: you never predict, you prepare; every future gets a plan; and the plan is one you made yourself.</p>
-  <div class="books">
-    <div class="book b-brand">
-      <div class="land">Brands</div>
+<!-- 1 · HERO -->
+<header class="hero" id="hero">
+  <div class="hero-layers" aria-hidden="true">
+    <div class="blob blob-gold" data-depth="0.30"></div>
+    <div class="blob blob-blue" data-depth="0.16"></div>
+    <div class="blob blob-red" data-depth="0.46"></div>
+    <div class="ghost" data-depth="0.10">tomorrow</div>
+  </div>
+  <div class="hero-inner wrap" id="heroInner">
+    <div class="kicker reveal">The Tomorrow Method</div>
+    <h1 class="reveal d1">You can't predict the future.<br><em>You can be ready for every version of it.</em></h1>
+    <p class="standfirst reveal d2">For fifty years, corporations have used scenario planning to prepare for futures they couldn't forecast — building several plausible tomorrows and stress-testing every plan against the lot. The Tomorrow Method is that discipline, walked down from the executive floor and handed to the people those plans are usually <em>about</em>.</p>
+  </div>
+  <div class="scroll-cue" aria-hidden="true">Scroll</div>
+</header>
+
+<!-- 2 · METHOD -->
+<section class="method">
+  <div class="wrap">
+    <div class="kicker reveal">One method, three lands</div>
+    <p class="bigline reveal d1">Each book points the same engine at a different kind of unpredictable weather.</p>
+    <p class="small reveal d2">Same grammar throughout: you never predict, you prepare; every future gets a plan; and the plan is one you made yourself.</p>
+  </div>
+</section>
+
+<!-- 3 · THE STACK -->
+<section class="stack" id="stack" aria-label="The three books">
+  <article class="panel p-brand">
+    <div class="panel-inner"><div class="wrap">
+      <div class="panel-head"><span class="land">Brands</span><span class="idx">01 / 03</span></div>
       <h3>TomorrowBrand</h3>
-      <p>Where it began: future-proofing healthcare brands — strategies flown through the wind tunnel before boards signed off on them. The corporate original, with receipts.</p>
+      <p class="desc">Where it began: future-proofing healthcare brands — strategies flown through the wind tunnel before boards signed off on them. The corporate original, with receipts.</p>
       <div class="status">The method's first land</div>
-    </div>
-    <div class="book b-you">
-      <div class="land">Bodies</div>
+    </div></div>
+  </article>
+  <article class="panel p-you">
+    <div class="panel-inner"><div class="wrap">
+      <div class="panel-head"><span class="land">Bodies</span><span class="idx">02 / 03</span></div>
       <h3>TomorrowYou</h3>
-      <p>The discipline rebuilt for unpredictable bodies — five kinds of month, a plan for each, and the quiet power of being ready for every version of yourself that might wake up.</p>
+      <p class="desc">The discipline rebuilt for unpredictable bodies — five kinds of month, a plan for each, and the quiet power of being ready for every version of yourself that might wake up.</p>
       <div class="status">The method, made personal</div>
-    </div>
-    <div class="book b-work">
-      <div class="land">Careers</div>
+    </div></div>
+  </article>
+  <article class="panel p-work">
+    <div class="panel-inner"><div class="wrap">
+      <div class="panel-head"><span class="land">Careers</span><span class="idx">03 / 03</span></div>
       <h3>TomorrowWork</h3>
-      <p>AI takes tasks, not jobs — so when the tasks move, what's your job? Five moves from unhook to the climate test, ending in a one-page plan tested against four futures.</p>
+      <p class="desc">AI takes tasks, not jobs — so when the tasks move, what's your job? Five moves from unhook to the climate test, ending in a one-page plan tested against four futures.</p>
       <div class="status">Coming — companion site live below</div>
+    </div></div>
+  </article>
+</section>
+
+<!-- 4 · THE TUNNEL -->
+<section class="tunnel" id="tunnel">
+  <div class="tunnel-sticky">
+    <div class="rings" aria-hidden="true">
+      <div class="ring"></div>
+      <div class="ring rg"></div>
+      <div class="ring"></div>
+      <div class="ring rb"></div>
+      <div class="ring"></div>
+      <div class="ring rr"></div>
+      <div class="ring"></div>
+    </div>
+    <div class="tunnel-copy" id="tunnelCopy">
+      <div class="kicker">The Living Tunnel</div>
+      <h2>A book about the future dates the day it's printed — unless something keeps it current.</h2>
+      <p>The Living Tunnel is TomorrowWork's companion: the state of the AI climate, sourced and dated, refreshed every quarter — with the four futures' dials moved by evidence, and a re-test you can run against your own plan and your own industry.</p>
+      <a class="cta" href="/quarterly">Enter the Living Tunnel — updated Q3 2026</a>
     </div>
   </div>
-</div></section>
-
-<section><div class="wrap">
-  <h2>The Living Tunnel</h2>
-  <p>A book about the future dates the day it's printed — unless something keeps it current. The Living Tunnel is TomorrowWork's companion: the state of the AI climate, sourced and dated, refreshed every quarter — with the four futures' dials moved by evidence, and a re-test you can run against your own plan and your own industry.</p>
-  <a class="cta" href="/quarterly">Enter the Living Tunnel — updated Q3 2026</a>
-</div></section>
+</section>
 
 <footer><div class="wrap">
   The Tomorrow Method · from the desk of <a href="https://harrysharman.com">Harry Sharman</a> · no predictions sold here
 </div></footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.classList.add('js');
+
+  /* Reveals: elements slide up the first time they enter the viewport. */
+  var reveals = document.querySelectorAll('.reveal');
+  if (reduced || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){ el.classList.add('inview'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('inview'); io.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    reveals.forEach(function(el){ io.observe(el); });
+  }
+  if (reduced) return;   /* everything below is decoration */
+
+  var layers    = Array.prototype.slice.call(document.querySelectorAll('[data-depth]'));
+  var heroInner = document.getElementById('heroInner');
+  var hero      = document.getElementById('hero');
+  var bar       = document.getElementById('progressBar');
+  var tunnel    = document.getElementById('tunnel');
+  var tSticky   = tunnel.querySelector('.tunnel-sticky');
+  var rings     = Array.prototype.slice.call(tunnel.querySelectorAll('.ring'));
+  var copy      = document.getElementById('tunnelCopy');
+  var panels    = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+
+  /* One eased scroll value; every effect reads from it. The easing is
+     what makes the layers feel like they have weight. */
+  var cur = window.scrollY || 0;
+  var mx = 0, my = 0, tmx = 0, tmy = 0;   /* pointer drift on the hero */
+
+  window.addEventListener('pointermove', function(e){
+    tmx = (e.clientX / window.innerWidth  - 0.5);
+    tmy = (e.clientY / window.innerHeight - 0.5);
+  }, {passive:true});
+
+  function clamp01(v){ return v < 0 ? 0 : (v > 1 ? 1 : v); }
+
+  function tick(){
+    var target = window.scrollY || 0;
+    cur += (target - cur) * 0.1;
+    if (Math.abs(target - cur) < 0.05) cur = target;
+    mx += (tmx - mx) * 0.06;
+    my += (tmy - my) * 0.06;
+
+    var vh = window.innerHeight;
+
+    /* progress line */
+    var total = document.documentElement.scrollHeight - vh;
+    bar.style.transform = 'scaleX(' + (total > 0 ? clamp01(target/total) : 0) + ')';
+
+    /* hero: layers drift at their own speeds, headline sinks + fades */
+    if (cur < vh * 1.2){
+      layers.forEach(function(el){
+        var d = parseFloat(el.getAttribute('data-depth'));
+        el.style.transform = 'translate3d(' + (mx * d * 90) + 'px,' +
+          (cur * d * -1 + my * d * 60) + 'px,0)';
+      });
+      var hp = clamp01(cur / (vh * 0.9));
+      heroInner.style.opacity = 1 - hp * 0.9;
+      heroInner.style.transform = 'translate3d(0,' + (cur * 0.32) + 'px,0)';
+    }
+
+    /* the stack: a panel being covered eases back and dims slightly */
+    panels.forEach(function(p, i){
+      var next = panels[i+1];
+      var inner = p.querySelector('.panel-inner');
+      if (!next){ inner.style.transform = 'none'; return; }
+      var k = clamp01(1 - next.getBoundingClientRect().top / vh);
+      inner.style.transform = 'scale(' + (1 - k * 0.06) + ') translate3d(0,' + (k * -26) + 'px,0)';
+      inner.style.opacity = 1 - k * 0.35;
+    });
+
+    /* the tunnel: progress 0→1 across the tall section drives the rings
+       outward past the viewer, then lands the copy in the middle */
+    var tr = tunnel.getBoundingClientRect();
+    var tp = clamp01(-tr.top / (tr.height - vh));
+    if (tr.top < vh && tr.bottom > 0){
+      rings.forEach(function(r, i){
+        var base = 0.08 + i * 0.15;
+        var s = base + tp * 2.6 * (0.55 + i * 0.14);
+        r.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+        r.style.opacity = s > 1.35 ? Math.max(0, 1 - (s - 1.35) / 0.9) : clamp01(s * 2);
+      });
+      var cp = clamp01((tp - 0.28) / 0.34);
+      copy.style.opacity = cp;
+      copy.style.transform = 'translate3d(0,' + ((1 - cp) * 46) + 'px,0) scale(' + (0.94 + cp * 0.06) + ')';
+    }
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
 
 </body>
 </html>
